@@ -1,0 +1,209 @@
+Red Wine Exploration by DAVID VARTANIAN
+=======================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+library(ggplot2)
+library(gridExtra)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+data <- read.csv("data/wineQualityReds.csv")
+```
+
+# Abstract
+I describe a dataset with almost 1600 types of red wine, in order to understand
+the meaning of the assigned score.
+
+# Introduction
+This dataset provided by Paulo Cortez, António Cerdeira, Fernando Almeida,
+Telmo Matos, and José Reis, from different universities in Portugal. It provides
+information like acidity, residual sugat, chlorides, and alcohol among others.
+I explore the data to find patterns and trends, and get the meaning of the given
+fetures.
+
+
+# Univariate Plots Section
+Let's start showing some summary numbers and first histograms to understand
+individual variables.
+
+```{r echo=FALSE, Summary}
+summary(data)
+```
+
+## Histograms: quality, fixed.acidity, total.sulfur.dioxide, alcohol
+```{r echo=FALSE, Univariate_Plots}
+p1 <- ggplot(aes(x=volatile.acidity), data=data)+
+  geom_histogram()+
+  xlab('Volatile Acidity')
+
+p2 <- ggplot(aes(x=fixed.acidity), data=data)+
+  geom_histogram(binwidth = 1)+
+  xlab('Fixed Acidity')
+
+p3 <- ggplot(aes(x=total.sulfur.dioxide), data=data)+
+  geom_histogram(binwidth = 10)+
+  xlab('Total Sulfur Dioxide')
+
+p4 <- ggplot(aes(x=alcohol), data=data)+
+  geom_histogram(binwidth = 0.4)+
+  xlab('Alcohol %')
+
+p5 <- ggplot(aes(x=chlorides), data=data)+
+  geom_histogram()+
+  xlab('Chlorides')
+
+p6 <- ggplot(aes(x=residual.sugar), data=data)+
+  geom_histogram()+
+  xlab('Residual Sugar')
+
+p7 <- ggplot(aes(x=pH), data=data)+
+  geom_histogram()+
+  xlab('pH')
+
+p8 <- ggplot(aes(x=sulphates), data=data)+
+  geom_histogram()+
+  xlab('Sulphates')
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol=2)
+```
+
+> **Tip**: Make sure that you leave a blank line between the start / end of
+each code block and the end / start of your Markdown text so that it is
+formatted nicely in the knitted text. Note as well that text on consecutive
+lines is treated as a single space. Make sure you have a blank line between
+your paragraphs so that they too are formatted for easy readability.
+
+# Univariate Analysis
+
+> **Tip**: Now that you've completed your univariate explorations, it's time to
+reflect on and summarize what you've found. Use the questions below to help you
+gather your observations and add your own if you have other thoughts!
+
+### Dataset Structure
+There are 9 continuous variables, 2 discrete variables and one categorical
+variable: quality.
+
+### Main dataset interest
+My general question is, how chemical properties define the quality of red wine?
+
+### Other features of interest
+I think fixed acidity, total sulfur dioxide, alcohol and sulphates are important
+to analyse together.
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+
+# Bivariate Plots Section
+
+> **Tip**: Based on what you saw in the univariate plots, what relationships
+between variables might be interesting to look at in this section? Don't limit
+yourself to relationships between a main output feature and one of the
+supporting variables. Try to look at relationships between supporting variables
+as well.
+
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+> **Tip**: As before, summarize what you found in your bivariate explorations
+here. Use the questions below to guide your discussion.
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+# Multivariate Plots Section
+
+> **Tip**: Now it's time to put everything together. Based on what you found in
+the bivariate plots section, create a few multivariate plots to investigate
+more complex interactions between variables. Make sure that the plots that you
+create here are justified by the plots you explored in the previous section. If
+you plan on creating any mathematical models, this is the section where you
+will do that.
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the \
+strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+> **Tip**: You've done a lot of exploration and have built up an understanding
+of the structure of and relationships between the variables in your dataset.
+Here, you will select three plots from all of your previous exploration to
+present here as a summary of some of your most interesting findings. Make sure
+that you have refined your selected plots for good titling, axis labels (with
+units), and good aesthetic choices (e.g. color, transparency). After each plot,
+make sure you justify why you chose each plot by describing what it shows.
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection
+
+> **Tip**: Here's the final step! Reflect on the exploration you performed and
+the insights you found. What were some of the struggles that you went through?
+What went well? What was surprising? Make sure you include an insight into
+future work that could be done with the dataset.
+
+> **Tip**: Don't forget to remove this, and the other **Tip** sections before
+saving your final work and knitting the final report!
