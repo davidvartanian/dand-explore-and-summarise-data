@@ -113,7 +113,20 @@ My general question is, how chemical properties define the quality of red wine?
 I think fixed acidity, total sulfur dioxide, alcohol and sulphates are important
 to analyse together.
 
-### Did you create any new variables from existing variables in the dataset?
+### Acidity
+Since acidity has 4 variables, I've created a variable called score.acidity, in
+order to measure how acid a wine can be.
+
+```{r Score_Acidity}
+fixed.acidity.norm <- (data$fixed.acidity - min(data$fixed.acidity)) / (max(data$fixed.acidity) - min(data$fixed.acidity))
+volatile.acidity.norm <- (data$volatile.acidity - min(data$volatile.acidity)) / (max(data$volatile.acidity) - min(data$volatile.acidity))
+citric.acid.norm <- (data$citric.acid - min(data$citric.acid)) / (max(data$citric.acid) - min(data$citric.acid))
+pH.norm <- 1 - (data$pH - min(data$pH)) / (max(data$pH) - min(data$pH))
+data$score.acidity <- (fixed.acidity.norm + volatile.acidity.norm + citric.acid.norm + pH.norm) / 4
+
+ggplot(aes(x = score.acidity, y = quality), data = data) +
+  geom_point(aes(color = quality, alpha = 1/10), position = 'jitter')
+```
 
 ### Of the features you investigated, were there any unusual distributions? \
 Did you perform any operations on the data to tidy, adjust, or change the form \
