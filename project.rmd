@@ -44,53 +44,63 @@ summary(data)
 ```
 
 ## Histograms: quality, fixed.acidity, total.sulfur.dioxide, alcohol
-```{r echo=FALSE, Univariate_Plots}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
 p1 <- ggplot(aes(x=volatile.acidity), data=data)+
-  geom_histogram()+
+  geom_histogram(aes(color=I('#CC9933')))+
   xlab('Volatile Acidity')
 
 p2 <- ggplot(aes(x=fixed.acidity), data=data)+
-  geom_histogram(binwidth = 1)+
+  geom_histogram(aes(color=I('#99CCFF')), binwidth = 1)+
   xlab('Fixed Acidity')
 
 p3 <- ggplot(aes(x=total.sulfur.dioxide), data=data)+
-  geom_histogram(binwidth = 10)+
+  geom_histogram(aes(color=I('#00DD99')), binwidth = 10)+
   xlab('Total Sulfur Dioxide')
 
 p4 <- ggplot(aes(x=alcohol), data=data)+
-  geom_histogram(binwidth = 0.4)+
+  geom_histogram(aes(color=I('#FF3366')), binwidth = 0.4)+
   xlab('Alcohol %')
 
 p5 <- ggplot(aes(x=chlorides), data=data)+
-  geom_histogram()+
+  geom_histogram(aes(color=I('#CCFF00')))+
   xlab('Chlorides')
 
 p6 <- ggplot(aes(x=residual.sugar), data=data)+
-  geom_histogram()+
+  geom_histogram(aes(color=I('#6688CC')))+
   xlab('Residual Sugar')
 
 p7 <- ggplot(aes(x=pH), data=data)+
-  geom_histogram()+
+  geom_histogram(aes(color=I('#CC00CC')))+
   xlab('pH')
 
 p8 <- ggplot(aes(x=sulphates), data=data)+
-  geom_histogram()+
+  geom_histogram(aes(color=I('#33DDDD')))+
   xlab('Sulphates')
 
 grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol=2)
 ```
 
-> **Tip**: Make sure that you leave a blank line between the start / end of
-each code block and the end / start of your Markdown text so that it is
-formatted nicely in the knitted text. Note as well that text on consecutive
-lines is treated as a single space. Make sure you have a blank line between
-your paragraphs so that they too are formatted for easy readability.
-
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
+```{r echo=FALSE, Quality_Distribution_Alcohol}
+ggplot(aes(x=alcohol, y=quality), data=data)+
+  geom_smooth(aes(color=quality), method ='loess')+
+  ggtitle('Quality vs. Level of alcohol')+
+  xlab('Alcohol %')+
+  ylab('Quality')
+```
+
+> **Fact**: Higher quality wines seem to have higher levels of alcohol
+
+```{r echo=FALSE, Quality_Distribution_FixedAcidity}
+ggplot(aes(x=fixed.acidity, y=quality), data=data)+
+  geom_smooth(aes(color=quality), method ='loess')+
+  ggtitle('Quality vs. Level of fixed acidity')+
+  xlab('Fixed Acidity')+
+  ylab('Quality')
+```
+
+> **Fact**: Higher quality wines seem to have lower levels of acidity
 
 ### Dataset Structure
 There are 9 continuous variables, 2 discrete variables and one categorical
