@@ -1,5 +1,5 @@
-Red Wine Exploration by DAVID VARTANIAN
-=======================================
+# Red Wine Exploration
+## by David Vartanian
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 # Load all of the packages that you end up using in your analysis in this code
@@ -28,11 +28,11 @@ I describe a dataset with almost 1600 types of red wine, in order to understand
 the meaning of the assigned score.
 
 # Introduction
-This dataset provided by Paulo Cortez, António Cerdeira, Fernando Almeida,
+This dataset is provided by Paulo Cortez, António Cerdeira, Fernando Almeida,
 Telmo Matos, and José Reis, from different universities in Portugal. It provides
 information like acidity, residual sugat, chlorides, and alcohol among others.
 I explore the data to find patterns and trends, and get the meaning of the given
-fetures.
+fetures. More information [here](http://www.sciencedirect.com/science/article/pii/S0167923609001377?via%3Dihub)
 
 
 # Univariate Plots Section
@@ -46,45 +46,43 @@ summary(data)
 ## Histograms: quality, fixed.acidity, total.sulfur.dioxide, alcohol
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
 p1 <- ggplot(aes(x = volatile.acidity), data = data)+
-  geom_histogram(aes(color = I('#CC9933')))+
+  geom_histogram(aes(colour = I('#CC9933')))+
   xlab('Volatile Acidity')
 
 p2 <- ggplot(aes(x = fixed.acidity), data = data) +
-  geom_histogram(aes(color = I('#99CCFF')), binwidth = 1) +
+  geom_histogram(aes(colour = I('#99CCFF'))) +
   xlab('Fixed Acidity')
 
 p3 <- ggplot(aes(x = total.sulfur.dioxide), data = data) +
-  geom_histogram(aes(color = I('#00DD99')), binwidth = 10) +
+  geom_histogram(aes(colour = I('#00DD99'))) +
   xlab('Total Sulfur Dioxide')
 
 p4 <- ggplot(aes(x = alcohol), data = data) +
-  geom_histogram(aes(color = I('#FF3366')), binwidth = 0.4) +
+  geom_histogram(aes(colour = I('#FF3366'))) +
   xlab('Alcohol %')
 
 p5 <- ggplot(aes(x = chlorides), data = data) +
-  geom_histogram(aes(color = I('#CCFF00'))) +
+  geom_histogram(aes(colour = I('#CCFF00'))) +
   xlab('Chlorides')
 
 p6 <- ggplot(aes(x = residual.sugar), data = data) +
-  geom_histogram(aes(color = I('#6688CC'))) +
+  geom_histogram(aes(colour = I('#6688CC'))) +
   xlab('Residual Sugar')
 
 p7 <- ggplot(aes(x = pH), data = data) +
-  geom_histogram(aes(color = I('#CC00CC'))) +
+  geom_histogram(aes(colour = I('#CC00CC'))) +
   xlab('pH')
 
 p8 <- ggplot(aes(x = sulphates), data = data) +
-  geom_histogram(aes(color = I('#33DDDD'))) +
+  geom_histogram(aes(colour = I('#33DDDD'))) +
   xlab('Sulphates')
 
 grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 2)
 ```
 
-# Univariate Analysis
-
-```{r echo=FALSE, Quality_Distribution_Alcohol}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_Distribution_Alcohol}
 ggplot(aes(x = alcohol, y = quality), data = data) +
-  geom_smooth(aes(color = quality), method = 'loess') +
+  geom_smooth(aes(colour = quality), method = 'loess') +
   ggtitle('Quality vs. Level of alcohol') +
   xlab('Alcohol %') +
   ylab('Quality')
@@ -92,15 +90,29 @@ ggplot(aes(x = alcohol, y = quality), data = data) +
 
 > **Fact**: Higher quality wines seem to have higher levels of alcohol
 
-```{r echo=FALSE, Quality_Distribution_FixedAcidity}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_Distribution_FixedAcidity}
 ggplot(aes(x = fixed.acidity, y = quality), data = data) +
-  geom_smooth(aes(color = quality), method = 'loess') +
+  geom_smooth(aes(colour = quality), method = 'loess') +
   ggtitle('Quality vs. Level of fixed acidity') +
   xlab('Fixed Acidity') +
   ylab('Quality')
 ```
 
 > **Fact**: Higher quality wines seem to have lower levels of acidity
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_vs_Density}
+ggplot(aes(x = density, y = quality), data = data) +
+  geom_smooth(aes(colour = quality), method = 'loess') +
+  ggtitle('Density vs. Quality') +
+  xlab('Density') +
+  ylab('Quality')
+```
+
+
+
+> **Fact**: Higher quality wines seem to have lower density
+
+# Univariate Analysis
 
 ### Dataset Structure
 There are 9 continuous variables, 2 discrete variables and one categorical
@@ -113,8 +125,8 @@ My general question is, how chemical properties define the quality of red wine?
 I think fixed acidity, total sulfur dioxide, alcohol and sulphates are important
 to analyse together.
 
-### Acidity
-Since acidity has 4 variables, I've created a variable called score.acidity, in
+### Acidity Score
+Since acidity has 4 variables, I've created a variable called *score.acidity*, in
 order to measure how acid a wine can be.
 
 ```{r Score_Acidity}
@@ -125,55 +137,138 @@ pH.norm <- 1 - (data$pH - min(data$pH)) / (max(data$pH) - min(data$pH))
 data$score.acidity <- (fixed.acidity.norm + volatile.acidity.norm + citric.acid.norm + pH.norm) / 4
 
 ggplot(aes(x = score.acidity, y = quality), data = data) +
-  geom_point(aes(color = quality, alpha = 1/10), position = 'jitter')
+  geom_point(aes(colour = quality, alpha = 1/20), position = 'jitter') +
+  ylab('Quality') +
+  xlab('Acidity Score') +
+  ggtitle('Acidity Score vs. Quality')
+
+ggplot(aes(x = score.acidity, y = density), data = data) +
+  geom_point(aes(colour = score.acidity, alpha = 1/10)) +
+  labs(x = 'Acidity Score', y = 'Density', title = 'Acidity vs. Density')
+
+# acidity by quality
+ggplot(aes(x = score.acidity), data = data) +
+  facet_wrap(~quality) +
+  geom_histogram(binwidth = 0.05) +
+  labs(x = 'Acidity Score', title = 'Acidity Score faceted by Quality')
 ```
 
-### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+### Variable Transformations
+It was not necessary to clean the dataset. However I think it is a good idea to
+apply some transformations to skewed variables.
 
+```{r echo=FALSE, message=FALSE, warning=FALSE, Transforming_Variables}
+p1 + scale_x_log10() + ggtitle('Volatile Acidity - Log10')
+summary(log10(data$volatile.acidity))
+p2 + scale_x_log10() + ggtitle('Fixed Acidity - Log10')
+summary(log10(data$fixed.acidity))
+p3 + scale_x_log10() + ggtitle('Total Sulfur Dioxide - Log10')
+summary(log10(data$total.sulfur.dioxide))
+p4 + scale_x_log10() + ggtitle('Alcohol - Log10')
+summary(log10(data$alcohol))
+p5 + scale_x_log10() + ggtitle('Chloridres - Log10')
+summary(log10(data$chlorides))
+p6 + scale_x_log10() + ggtitle('Residual Sugar - Log10')
+summary(log10(data$residual.sugar))
+p8 + scale_x_log10() + ggtitle('Sulphates - Log10')
+summary(log10(data$sulphates))
+ggplot(aes(x = free.sulfur.dioxide), data = data) +
+  geom_histogram(aes(colour = I('#00DD99'))) +
+  xlab('Free Sulfur Dioxide') +
+  ggtitle('Free Sulfur Dioxide - Log10') +
+  scale_x_log10()
+```
 
 # Bivariate Plots Section
-
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
+Let's try to find trends and interesting patterns by comparing two variables.
 
 ```{r echo=FALSE, Bivariate_Plots}
+ggplot(aes(x = citric.acid, y = pH), data = data) +
+  geom_point(aes(colour = I('#8DB7A4'), alpha = 1/10)) +
+  xlab('Citric Acid') +
+  ggtitle('Citric Acid vs. pH')
 
+ggplot(aes(x = volatile.acidity, y = pH), data = data) +
+  geom_point(aes(colour = I('#B19784'), alpha = 1/10)) +
+  xlab('Volatile Acidity') +
+  ggtitle('Volatile Acidity vs. pH')
+
+ggplot(aes(x = density, y = quality), data = data) +
+  geom_point(aes(colour = quality, alpha = 1/10), position = 'jitter') +
+  xlab('Density') +
+  ylab('Quality') +
+  ggtitle('Density vs. Quality')
 ```
 
 # Bivariate Analysis
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
+### Relationships
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+```{r echo=FALSE, Density_vs_Quality}
+ggplot(aes(x = density, y = quality), data = data) +
+  geom_point(aes(colour = density, alpha = 1/10), position = 'jitter') +
+  labs(x = 'Density', y = 'Quality', title = 'Density vs. Quality')
+```
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+```{r echo=FALSE, Chlorides_vs_Sulphates}
+ggplot(aes(x = chlorides, y = sulphates), data = data) +
+  geom_point(aes(colour = sulphates, alpha = 1/20)) +
+  labs(x = 'Chlorides', y = 'Sulphates', title = 'Chlorides vs. Sulphates')
+```
 
-### What was the strongest relationship you found?
+```{r echo=FALSE, Residual_Sugar_vs_Chlorides}
+ggplot(aes(x = chlorides, y = residual.sugar), data = data) +
+  geom_point(aes(colour = residual.sugar, alpha = 1/10)) +
+  labs(x = 'Chlorides', y = 'Residual Sugar', title = 'Chlorides vs. Residual Sugar')
+```
 
+```{r echo=FALSE, Free_Sulfur_Dioxide_vs_Total_Sulfur_Dioxide}
+ggplot(aes(x = total.sulfur.dioxide, y = free.sulfur.dioxide), data = data) +
+  geom_point(aes(colour = free.sulfur.dioxide, alpha = 1/10)) +
+  labs(x = 'Total Sulfur Dioxide', y = 'Free Sulfur Dioxide', title = 'Free vs. Total Sulfur Dioxide')
+
+score.sulfur.dioxide <- (log10(data$free.sulfur.dioxide) + log10(data$total.sulfur.dioxide)) / 2
+```
+
+### Interesting relationships
+
+#### Density vs Quality
+I've found a slightly positive correlation, meaning that *density* is not so
+important to determine the quality.
+
+#### Chlorides vs Sulphates
+I've found that levels are mostly low for both variables. I would say that they
+don't influence much on the quality, since all types of wine have the same level
+on these two variables.
+
+#### Chlorides vs Residual Sugar
+I've found the same here, they keep levels always more or less low.
+
+### Acidity vs. Density
+Here the positive correlation is pretty strong and easily noticeable. 
+This means that the more the level of density the more acid the wine is. And
+regarding the level of acidity vs. quality, you might notice that the plots for
+Acidity vs. Quality and Acidity vs. Density are almost identical.
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
-
 ```{r echo=FALSE, Multivariate_Plots}
+# acidity vs. density > quality
+ggplot(aes(x = score.acidity, y = density), data = data) +
+  geom_point(aes(colour = data$quality, alpha = 1/10))
 
+# sulfur dioxide vs acidity > quality
+ggplot(aes(x = score.sulfur.dioxide, y = score.acidity), data = data)+
+  geom_jitter(aes(color = quality))
+
+ggplot(aes(x = score.acidity, y = score.sulfur.dioxide), data = data) +
+  geom_jitter(aes(colour = density)) +
+  facet_wrap(~quality) +
+  labs(x = 'Acidity Score', y = 'Sulfur Dioxide Score', title = 'Density on Acidity vs. Sulfur Dioxide, faceted by Quality')
 ```
 
 # Multivariate Analysis
+@todo
 
 ### Talk about some of the relationships you observed in this part of the \
 investigation. Were there features that strengthened each other in terms of \
@@ -193,7 +288,7 @@ of the structure of and relationships between the variables in your dataset.
 Here, you will select three plots from all of your previous exploration to
 present here as a summary of some of your most interesting findings. Make sure
 that you have refined your selected plots for good titling, axis labels (with
-units), and good aesthetic choices (e.g. color, transparency). After each plot,
+units), and good aesthetic choices (e.g. colour, transparency). After each plot,
 make sure you justify why you chose each plot by describing what it shows.
 
 ### Plot One
