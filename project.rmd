@@ -1,8 +1,5 @@
 # Red Wine Exploration
-## by David Vartanian
-
-# TODO - Problems to solve
-* Insufficient documentation of transformation steps. Data processing or transformations (creating a categorical variable) should be performed programmatically and included in the RMD file and the final knitted HTML output. When you perform these operations, make sure you have text that documents the creation of these transformed variables.
+### by David Vartanian
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 # Load all of the packages that you end up using in your analysis in this code
