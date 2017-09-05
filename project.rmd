@@ -1,12 +1,17 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 # Red Wine Exploration
 ### by David Vartanian
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      warning=FALSE, message=FALSE)
+```
+
+```{r echo=FALSE, packages}
 # Load all of the packages that you end up using in your analysis in this code
 # chunk.
 
@@ -28,6 +33,33 @@ library(RColorBrewer)
 ```{r echo=FALSE, Load_the_Data}
 # Load the Data
 data <- read.csv("data/wineQualityReds.csv")
+```
+
+```{r echo=FALSE, plot_functions}
+plot_histogram <- function(x, xlabel = '', colour = I('#6688CC'), title = '', bins = 20) {
+  plot <- ggplot(aes(x = x), data = data) +
+    geom_histogram(aes(colour = colour), bins = bins) +
+    xlab(xlabel) +
+    ggtitle(title)
+  return(plot)
+}
+
+plot_outliers <- function(y, ylabel = '', title = '') {
+  plot <- ggplot(aes(x = 1, y = y), data = data) +
+    geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
+    geom_jitter(aes(x = 1, y = y), alpha = 0.3) +
+    labs(x = '', y = ylabel, 
+       title = title)
+  return(plot)
+}
+
+plot_quality_box <- function(y, ylabel = '', title = '') {
+  plot <- ggplot(aes(x = factor(quality), y = y), data = data) +
+  geom_jitter(alpha = 0.3) +
+  geom_boxplot(alpha = 0.5, colour = 'blue') +
+  labs(x = 'Quality', y = ylabel, title = title)
+  return(plot)
+}
 ```
 
 # Abstract
@@ -59,98 +91,66 @@ ggplot(aes(x = as.factor(quality)), data = data) +
 ### Histograms: quality, fixed.acidity, total.sulfur.dioxide, alcohol
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
 # volatile.acidity
-plot.volatile.acidity <- ggplot(aes(x = volatile.acidity), data = data) +
-  geom_histogram(aes(colour = I('#CC9933')), bins = 20) +
-  xlab('Acetic Acid (g/dm³)')
-
-plot.volatile.acidity.outliers.box <- ggplot(aes(x = 1, y = volatile.acidity), 
-                                         data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = volatile.acidity), alpha = 0.3) +
-  labs(x = '', y = 'Acetic Acid (g/dm³)', 
-       title = 'Acetic Acid Outliers')
+plot.volatile.acidity <- plot_histogram(data$volatile.acidity, 
+                                        'Acetic Acid (g/dm³)', I('#CC9933'))
+plot.volatile.acidity.outliers.box <- plot_outliers(data$volatile.acidity, 
+                                                    'Acetic Acid (g/dm³)', 
+                                                    'Acetic Acid Outliers') 
 
 # fixed.acidity
-plot.fixed.acidity <- ggplot(aes(x = fixed.acidity), data = data) +
-  geom_histogram(aes(colour = I('#99CCFF')), bins = 20) +
-  xlab('Tartaric Acid (g/dm³)')
+plot.fixed.acidity <- plot_histogram(data$fixed.acidity, 
+                                     'Tartaric Acid (g/dm³)', I('#99CCFF'))
 
-plot.fixed.acidity.outliers.box <- ggplot(aes(x = 1, y = fixed.acidity), 
-                                      data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = fixed.acidity), alpha = 0.3) +
-  labs(x = '', y = 'Tartaric Acid (g/dm³)', title = 'Tartaric Acid Outliers')
+plot.fixed.acidity.outliers.box <- plot_outliers(data$fixed.acidity,
+                                                 'Tartaric Acid (g/dm³)',
+                                                 'Tartaric Acid Outliers')
 
-plot.total.sulfur.dioxide <- ggplot(aes(x = total.sulfur.dioxide), 
-                                    data = data) +
-  geom_histogram(aes(colour = I('#00DD99')), bins = 20) +
-  xlab('Total Sulphure Dioxide (mg/dm³)')
+# Sulphure Dioxide
+plot.total.sulfur.dioxide <- plot_histogram(data$total.sulfur.dioxide,
+                                            'Total Sulphure Dioxide (mg/dm³)',
+                                            I('#00DD99'))
+plot.total.sulfur.dioxide.outliers.box <- plot_outliers(
+  data$total.sulfur.dioxide,
+  'Total Sulphure Dioxide (mg/dm³)',
+  'Total Sulphure Dioxide Outliers')
 
-plot.total.sulfur.dioxide.outliers.box <- ggplot(aes(x = 1, 
-                                                 y = total.sulfur.dioxide), 
-                                             data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = total.sulfur.dioxide), alpha = 0.3) +
-  labs(x = '', y = 'Total Sulphure Dioxide (mg/dm³)', 
-       title = 'Total Sulphure Dioxide Outliers')
+# Alcohol
+plot.alcohol <- plot_histogram(data$alcohol, 'Alcohol (%)',
+                               I('#FF3366'), 10)
+plot.alcohol.outliers.box <- plot_outliers(
+  data$alcohol, 'Alcohol (%)', 'Alcohol Outliers')
 
-plot.alcohol <- ggplot(aes(x = alcohol), data = data) +
-  geom_histogram(aes(colour = I('#FF3366')), bins = 10) +
-  xlab('Alcohol (%)')
+# Chlorides
+plot.chlorides <- plot_histogram(data$chlorides, 'Sodium Chloride (g/dm³)',
+                                 I('#CCFF00'), bins = 10)
+plot.chlorides.outliers.box <- plot_outliers(
+  data$chlorides,
+  'Sodium Chloride (g/dm³)', 'Sodium Chloride Outliers')
 
-plot.alcohol.outliers.box <- ggplot(aes(x = 1, y = alcohol), data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = alcohol), alpha = 0.3) +
-  labs(x = '', y = 'Alcohol (%)', title = 'Alcohol Outliers')
+# Residual Sugar
+plot.residual.sugar <- plot_histogram(data$residual.sugar, 
+                                      'Residual Sugar (g/dm³)', I('#6688CC'))
+plot.residual.sugar.outliers.box <- plot_outliers(
+  data$residual.sugar, 'Residual Sugar (g/dm³)', 'Residual Sugar Outliers')
 
-plot.chlorides <- ggplot(aes(x = chlorides), data = data) +
-  geom_histogram(aes(colour = I('#CCFF00')), bins = 10) +
-  xlab('Sodium Chloride (g/dm³)')
+# pH
+plot.pH <- plot_histogram(data$pH, 'pH', I('#CC00CC'))
+plot.pH.outliers.box <- plot_outliers(data$pH, 'pH', 'pH Outliers')
 
-plot.chlorides.outliers.box <- ggplot(aes(x = 1, y = chlorides), data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = chlorides), alpha = 0.3) +
-  labs(x = '', y = 'Sodium Chloride (g/dm³)', 
-       title = 'Sodium Chloride Outliers')
+# Sulphates
+plot.sulphates <- plot_histogram(data$sulphates, 
+                                 'Potassium Sulphate (g/dm³)', 
+                                 I('#33DDDD'), bins = 10)
+plot.sulphates.outliers.box <- plot_outliers(
+  data$sulphates,
+  'Potassium Sulphate (g/dm³)',
+  'Potassium Sulphate Outliers')
 
-plot.residual.sugar <- ggplot(aes(x = residual.sugar), data = data) +
-  geom_histogram(aes(colour = I('#6688CC')), bins = 20) +
-  xlab('Residual Sugar (g/dm³)')
-
-plot.residual.sugar.outliers.box <- ggplot(aes(x = 1, y = residual.sugar), 
-                                       data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = residual.sugar), alpha = 0.3) +
-  labs(x = '', y = 'Residual Sugar (g/dm³)', 
-       title = 'Residual Sugar Outliers')
-
-plot.pH <- ggplot(aes(x = pH), data = data) +
-  geom_histogram(aes(colour = I('#CC00CC')), bins = 20) +
-  xlab('pH')
-
-plot.pH.outliers.box <- ggplot(aes(x = 1, y = pH), data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = pH), alpha = 0.3) +
-  labs(x = '', y = 'pH', title = 'pH Outliers')
-
-plot.sulphates <- ggplot(aes(x = sulphates), data = data) +
-  geom_histogram(aes(colour = I('#33DDDD')), bins = 10) +
-  xlab('Potassium Sulphate (g/dm³)')
-
-plot.sulphates.outliers.box <- ggplot(aes(x = 1, y = sulphates), data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = sulphates), alpha = 0.3) +
-  labs(x = '', y = 'Potassium Sulphate (g/dm³)', 
-       title = 'Potassium Sulphate Outliers')
-
-plot.density <- ggplot(aes(x = density), data = data) +
-  geom_histogram(aes(colour = I('#91C0F9')), bins = 20) +
-  xlab('Density of water')
-
-plot.density.outliers.box <- ggplot(aes(x = 1, y = density), data = data) +
-  geom_boxplot(colour = 'blue', outlier.shape = 1, outlier.colour = 'red') +
-  geom_jitter(aes(x = 1, y = density), alpha = 0.3) +
-  labs(x = '', y = 'Density of water', title = 'Density Outliers')
+# Density
+plot.density <- plot_histogram(data$density, 'Density of water', I('#91C0F9'))
+plot.density.outliers.box <- plot_outliers(data$density, 
+                                           'Density of water',
+                                           'Density Outliers')
 
 grid.arrange(plot.volatile.acidity, plot.fixed.acidity, 
              plot.total.sulfur.dioxide, plot.alcohol, 
@@ -374,10 +374,7 @@ This variable has only two values: S (short) and L (large), using the median of
 Let's try to find trends and interesting patterns by comparing two variables.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_Distribution_Alcohol}
-ggplot(aes(x = factor(quality), y = alcohol), data = data) +
-  geom_jitter(alpha = 0.3) +
-  geom_boxplot(alpha = 0.5, colour = 'blue') +
-  labs(x = 'Quality', y = 'Alcohol (%)', title = 'Alcohol level by Quality')
+plot_quality_box(data$alcohol, 'Alcohol (%)', 'Alcohol level by Quality')
 ```
 
 ```{r}
@@ -387,11 +384,8 @@ cor(x = data$quality, y = data$alcohol)
 > **Fact**: Higher quality wines seem to have higher levels of alcohol
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_Dist_FixedAcidity}
-ggplot(aes(x = factor(quality), y = fixed.acidity), data = data) +
-  geom_jitter(alpha = 0.3) +
-  geom_boxplot(alpha = 0.5, colour = 'blue') +
-  labs(x = 'Quality', y = 'Tartaric Acid (g/dm³)', 
-       title = 'Tartaric Acid level by Quality')
+plot_quality_box(data$fixed.acidity, 'Tartaric Acid (g/dm³)', 
+                 'Tartaric Acid level by Quality')
 ```
 
 ```{r}
@@ -402,11 +396,7 @@ cor(x = data$quality, y = data$fixed.acidity)
 > **Fact**: Higher quality wines seem to have lower levels of acidity
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Quality_vs_Density}
-ggplot(aes(x = factor(quality), y = density), data = data) +
-  geom_jitter(alpha = 0.3) +
-  geom_boxplot(alpha = 0.5, colour = 'blue') +
-  labs(x = 'Quality', y = 'Density (g/cm³)', 
-       title = 'Density level by Quality')
+plot_quality_box(data$density, 'Density (g/cm³)', 'Density level by Quality')
 ```
 
 ```{r}
@@ -660,7 +650,7 @@ plot.durability.quality_alcohol <- ggplot(aes(x = factor(quality),
        title = 'Durability regarding Alcohol vs. Quality') +
    geom_boxplot( aes(fill= durability))  +
   scale_fill_brewer(type='seq',
-                   guide=guide_legend(title='Quality'))
+                   guide=guide_legend(title='Durability'))
 plot.durability.quality_alcohol
 ```
 
@@ -674,7 +664,7 @@ more alcohol in addition to *sulphates* and *free sulphure dioxide*.
 ```{r echo=FALSE, Multivariate_Plots2}
 ggplot(aes(x=density, y=alcohol),
        data=data)+
-  geom_smooth(aes(color=durability), method = 'loess') +
+  geom_smooth(aes(color=data$durability), method = 'loess') +
   labs(x = 'Density (g/cm³)', y = 'Alcohol (%)', 
        title = 'Durability regarding Density vs. Alcohol')
 ```
@@ -734,6 +724,14 @@ density of water is higher only on mid-quality wines.
 ------
 
 # Reflection
+At the beginning it was for me quite difficult how to detect which levels of 
+acids and minerals would be beneficial for the quality of wine.
+Understanding univariate visualisations helped me to find relationships and go 
+deeper with the exploration comparing variables and finding correlations.
+Finally, after visualising bivariate plots, I could create even more advanced
+visualisations being able to display the trend of one variable regarding other
+two variables in the multivariate section.
+
 I feel that now I have a few extra tips to select new wines to taste. Higher 
 levels of alcohol and acidity, lower levels of density, as well as low levels of 
 residual sugar, chlorides, and sulphates. High levels of alcohol and low level 
